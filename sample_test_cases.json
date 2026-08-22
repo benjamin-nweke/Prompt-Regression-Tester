@@ -1,0 +1,48 @@
+[
+  {
+    "id": "tc_001_rate_limit",
+    "input": "Ticket: 'Getting 429s on /v1/embeddings since this morning, worked fine yesterday, nothing changed on our end.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "assertions": [
+      { "type": "json_valid" },
+      { "type": "contains", "value": "rate" },
+      { "type": "not_contains", "value": "I cannot" },
+      { "type": "max_length", "value": 500 }
+    ]
+  },
+  {
+    "id": "tc_002_auth_failure",
+    "input": "Ticket: 'API key that worked last week now returns 401 on every call, key hasn't been rotated.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "assertions": [
+      { "type": "json_valid" },
+      { "type": "regex_match", "value": "(?i)(auth|401|key)" },
+      { "type": "max_length", "value": 500 }
+    ]
+  },
+  {
+    "id": "tc_003_webhook_silent_failure",
+    "input": "Ticket: 'Webhooks stopped firing 3 days ago, no errors in our logs, dashboard shows deliveries as successful.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "assertions": [
+      { "type": "json_valid" },
+      { "type": "not_contains", "value": "I don't know" },
+      { "type": "max_length", "value": 500 }
+    ]
+  },
+  {
+    "id": "tc_004_billing_dispute",
+    "input": "Ticket: 'Invoice shows 3x our normal usage, we didn't change traffic patterns, need this reviewed before we pay.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "assertions": [
+      { "type": "json_valid" },
+      { "type": "contains", "value": "billing" },
+      { "type": "max_length", "value": 500 }
+    ]
+  },
+  {
+    "id": "tc_005_vague_report",
+    "input": "Ticket: 'It's broken.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "assertions": [
+      { "type": "json_valid" },
+      { "type": "contains", "value": "more" },
+      { "type": "max_length", "value": 600 }
+    ]
+  }
+]
