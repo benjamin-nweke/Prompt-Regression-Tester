@@ -1,48 +1,145 @@
 [
   {
-    "id": "tc_001_rate_limit",
-    "input": "Ticket: 'Getting 429s on /v1/embeddings since this morning, worked fine yesterday, nothing changed on our end.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "id": "structured_output_semantics",
+    "name": "Structured output meaning",
+    "input": "A response can satisfy a JSON schema and still be wrong. If the source never states a customer ID, forcing `customer_id` to be a required string can push the model to invent one instead of representing uncertainty. Structured Outputs solve formatting; they do not automatically solve semantic correctness.",
     "assertions": [
-      { "type": "json_valid" },
-      { "type": "contains", "value": "rate" },
-      { "type": "not_contains", "value": "I cannot" },
-      { "type": "max_length", "value": 500 }
-    ]
+      {
+        "type": "contains",
+        "value": "customer_id",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "Structured Outputs",
+        "severity": "soft"
+      },
+      {
+        "type": "contains",
+        "value": "uncertainty",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Improve clarity without weakening the central distinction: schema or formatting correctness does not guarantee semantic correctness. Preserve the risk that a required customer_id can encourage invention when the source does not provide one, and preserve the role of uncertainty."
   },
   {
-    "id": "tc_002_auth_failure",
-    "input": "Ticket: 'API key that worked last week now returns 401 on every call, key hasn't been rotated.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "id": "multi_agent_hidden_failure",
+    "name": "Hidden multi-agent failure",
+    "input": "A multi-agent system can pass every final-output evaluation and still fail internally. One agent can emit a structurally valid but incorrect payload, the next agent can accept it, and a later reviewer can repair the final answer. By the time the output looks correct, the failure happened three agents ago.",
     "assertions": [
-      { "type": "json_valid" },
-      { "type": "regex_match", "value": "(?i)(auth|401|key)" },
-      { "type": "max_length", "value": 500 }
-    ]
+      {
+        "type": "contains",
+        "value": "final",
+        "severity": "soft"
+      },
+      {
+        "type": "contains",
+        "value": "three agents ago",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the mechanism, not just the conclusion: final-output evaluation can look successful because a later reviewer repairs an earlier agent's structurally valid but incorrect payload. Do not turn this into a generic claim that multi-agent systems are unreliable."
   },
   {
-    "id": "tc_003_webhook_silent_failure",
-    "input": "Ticket: 'Webhooks stopped firing 3 days ago, no errors in our logs, dashboard shows deliveries as successful.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "id": "native_architecture_tradeoff",
+    "name": "Framework trade-off and timings",
+    "input": "I built a RAG prototype in about 40 minutes with a high-level framework. Rebuilding the same workflow with explicit state took at least two weeks. Later, one debugging session lasted three hours for a fix that took four minutes once I found the real problem. That is why I stopped treating 'framework or native?' as an ideological question; it depends on what I am optimizing for.",
     "assertions": [
-      { "type": "json_valid" },
-      { "type": "not_contains", "value": "I don't know" },
-      { "type": "max_length", "value": 500 }
-    ]
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(?:40|forty)(?:\\s+|-)minutes?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(?:2|two)(?:\\s+|-)weeks?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(?:3|three)(?:\\s+|-)hours?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(?:4|four)(?:\\s+|-)(?:minutes?|mins?)\\b",
+        "severity": "hard"
+      }
+    ],
+    "rubric": "Tighten the paragraph while preserving every timing, the first-person judgment, and the balanced trade-off. The rewrite must not imply that frameworks are always bad or native architectures are always better."
   },
   {
-    "id": "tc_004_billing_dispute",
-    "input": "Ticket: 'Invoice shows 3x our normal usage, we didn't change traffic patterns, need this reviewed before we pay.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "id": "grpo_equal_rewards",
+    "name": "GRPO equal-reward branch",
+    "input": "In GRPO, equal rewards give us nothing to rank within a group. I compute `group_mean` and `group_std`; when `group_std == 0`, every advantage should be zero. Otherwise the normalized advantage is `(r - group_mean) / group_std`. The zero-variance branch is not an edge case to hand-wave away because it changes the update signal.",
     "assertions": [
-      { "type": "json_valid" },
-      { "type": "contains", "value": "billing" },
-      { "type": "max_length", "value": 500 }
-    ]
+      {
+        "type": "contains",
+        "value": "group_mean",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "group_std",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)(?:group_std\\s*(?:==|=)\\s*0|group_std\\s+(?:is|equals?)\\s+zero|zero(?:-|\\s+)standard(?:-|\\s+)deviation)",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "zero",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the GRPO logic exactly: equal rewards provide no within-group ranking signal; when group_std is zero, advantages should be zero; otherwise advantages are normalized relative to group_mean and group_std. Do not collapse away the zero-variance branch."
   },
   {
-    "id": "tc_005_vague_report",
-    "input": "Ticket: 'It's broken.' Classify this ticket and respond with JSON: {category, priority, suggested_reply}.",
+    "id": "verifier_constraints",
+    "name": "Verifier constraints",
+    "input": "The verifier intentionally accepts `<answer>0</answer>` but rejects `42.0`, comma-separated numbers, and duplicate `<answer>` tags. That is acceptable for an integer-only task, but only if I state the constraint explicitly. Otherwise a reader could mistake a parser limitation for a property of the learning algorithm.",
     "assertions": [
-      { "type": "json_valid" },
-      { "type": "contains", "value": "more" },
-      { "type": "max_length", "value": 600 }
-    ]
+      {
+        "type": "contains",
+        "value": "<answer>0</answer>",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "42.0",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "duplicate",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the exact accepted/rejected examples and the caveat that these are parser constraints for an integer-only task, not properties of the learning algorithm. Do not make the verifier sound more general than it is."
+  },
+  {
+    "id": "honest_unrun_claims",
+    "name": "Honest claims about unrun training",
+    "input": "The examples here demonstrate the mechanics of verifiable rewards with small Python functions. I executed the three standard-library demonstrations, but I did not train a language model or measure a benchmark improvement. The distinction matters because showing that reward logic runs is not the same as showing that GRPO training improved a model.",
+    "assertions": [
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(?:3|three)\\s+(?:standard[- ]library\\s+)?demonstrations?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "benchmark",
+        "severity": "soft"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)(did not|didn't|no).*train",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the evidence boundary. The rewrite must state that three standard-library demonstrations were executed, but no language model was trained and no benchmark improvement was measured. It must not upgrade a mechanics demonstration into a training or performance claim."
   }
 ]
