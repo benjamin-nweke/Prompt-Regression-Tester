@@ -147,17 +147,12 @@
   {
     "id": "missing_evidence_not_false",
     "name": "Missing evidence is not falsity",
-    "input": "Claim: Because EvidenceDesk found no matching passage, the claim is false.\n\nSource: EvidenceDesk is a review aid. A match does not prove truth, and missing evidence does not prove a claim false. When the supplied material does not support a claim, the appropriate state is Insufficient evidence and the final decision remains with the human reviewer.\n\nDraft evidence card: Potential mismatch. No matching passage means the supplied evidence is insufficient; it does not establish that the claim itself is false.",
+    "input": "Claim: Because EvidenceDesk found no matching passage, the claim is false.\n\nSource: EvidenceDesk is a review aid. A match does not prove truth, and missing evidence does not prove a claim false. When the supplied material does not support a claim, the appropriate state is Insufficient evidence and the final decision remains with the human reviewer.\n\nDraft evidence card: Insufficient evidence. No matching passage means the supplied evidence is insufficient; it does not establish that the claim itself is false.",
     "assertions": [
       {
         "type": "contains",
-        "value": "Potential mismatch",
-        "severity": "hard"
-      },
-      {
-        "type": "contains",
         "value": "Insufficient evidence",
-        "severity": "soft"
+        "severity": "hard"
       },
       {
         "type": "regex_match",
