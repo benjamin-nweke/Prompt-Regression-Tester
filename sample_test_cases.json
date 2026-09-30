@@ -1,145 +1,170 @@
 [
   {
-    "id": "structured_output_semantics",
-    "name": "Structured output meaning",
-    "input": "A response can satisfy a JSON schema and still be wrong. If the source never states a customer ID, forcing `customer_id` to be a required string can push the model to invent one instead of representing uncertainty. Structured Outputs solve formatting; they do not automatically solve semantic correctness.",
+    "id": "version_date_sensitive_spec",
+    "name": "Version and date sensitive evidence",
+    "input": "Claim: The Orion API supports a 200k-token context window.\n\nSource A: Product documentation dated 2026-03-10 lists a 128k-token context window.\nSource B: Beta release notes dated 2026-07-02 introduce a 200k-token context window for beta accounts only.\n\nDraft evidence card: Potential mismatch. The 200k figure is supported only by the later beta release; the earlier documentation still lists 128k. The dates and beta limitation matter because the capability changed over time.",
     "assertions": [
       {
         "type": "contains",
-        "value": "customer_id",
+        "value": "Potential mismatch",
         "severity": "hard"
       },
       {
         "type": "contains",
-        "value": "Structured Outputs",
-        "severity": "soft"
+        "value": "2026-03-10",
+        "severity": "hard"
       },
       {
         "type": "contains",
-        "value": "uncertainty",
+        "value": "2026-07-02",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b128k(?:-token)?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b200k(?:-token)?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "beta",
         "severity": "soft"
       }
     ],
-    "rubric": "Improve clarity without weakening the central distinction: schema or formatting correctness does not guarantee semantic correctness. Preserve the risk that a required customer_id can encourage invention when the source does not provide one, and preserve the role of uncertainty."
+    "rubric": "Preserve the time-sensitive evidence. The review must keep both dates, both context-window values, and the fact that 200k is limited to beta accounts in the later source. Do not flatten the two sources into one timeless capability claim."
   },
   {
-    "id": "multi_agent_hidden_failure",
-    "name": "Hidden multi-agent failure",
-    "input": "A multi-agent system can pass every final-output evaluation and still fail internally. One agent can emit a structurally valid but incorrect payload, the next agent can accept it, and a later reviewer can repair the final answer. By the time the output looks correct, the failure happened three agents ago.",
+    "id": "percentage_point_distinction",
+    "name": "Percentage versus percentage points",
+    "input": "Claim: Checkout completion improved by 5 percentage points after the change.\n\nSource: The experiment report shows checkout completion increasing from 20% in the control group to 25% in the treatment group. That is a 5-percentage-point increase, which is also a 25% relative increase.\n\nDraft evidence card: Supported. The source supports a 5-percentage-point increase from 20% to 25%. Do not rewrite this as a 5% relative increase.",
     "assertions": [
       {
         "type": "contains",
-        "value": "final",
-        "severity": "soft"
+        "value": "Supported",
+        "severity": "hard"
       },
       {
-        "type": "contains",
-        "value": "three agents ago",
-        "severity": "soft"
+        "type": "regex_match",
+        "value": "(?i)\\b20\\s*%",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b25\\s*%",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b5(?:\\s+|-)?percentage(?:\\s+|-)?points?\\b",
+        "severity": "hard"
       }
     ],
-    "rubric": "Preserve the mechanism, not just the conclusion: final-output evaluation can look successful because a later reviewer repairs an earlier agent's structurally valid but incorrect payload. Do not turn this into a generic claim that multi-agent systems are unreliable."
+    "rubric": "Preserve the distinction between percentage points and relative percent change. The supported claim is an increase from 20% to 25%, or 5 percentage points. Do not describe it as a 5% relative increase."
   },
   {
-    "id": "native_architecture_tradeoff",
-    "name": "Framework trade-off and timings",
-    "input": "I built a RAG prototype in about 40 minutes with a high-level framework. Rebuilding the same workflow with explicit state took at least two weeks. Later, one debugging session lasted three hours for a fix that took four minutes once I found the real problem. That is why I stopped treating 'framework or native?' as an ideological question; it depends on what I am optimizing for.",
+    "id": "causation_overreach",
+    "name": "Causation overreach",
+    "input": "Claim: Enabling Smart Assist caused churn to fall by 12%.\n\nSource: An observational cohort analysis found that accounts using Smart Assist had 12% lower churn over 90 days. The report explicitly says users were not randomly assigned and that the result should be treated as an association, not a causal estimate.\n\nDraft evidence card: Potential mismatch. The 12% figure is present, but the source supports an association rather than the claim that Smart Assist caused the reduction.",
     "assertions": [
       {
-        "type": "regex_match",
-        "value": "(?i)\\b(?:40|forty)(?:\\s+|-)minutes?\\b",
+        "type": "contains",
+        "value": "Potential mismatch",
         "severity": "hard"
       },
       {
         "type": "regex_match",
-        "value": "(?i)\\b(?:2|two)(?:\\s+|-)weeks?\\b",
+        "value": "(?i)\\b12\\s*%",
         "severity": "hard"
       },
       {
         "type": "regex_match",
-        "value": "(?i)\\b(?:3|three)(?:\\s+|-)hours?\\b",
-        "severity": "hard"
-      },
-      {
-        "type": "regex_match",
-        "value": "(?i)\\b(?:4|four)(?:\\s+|-)(?:minutes?|mins?)\\b",
-        "severity": "hard"
+        "value": "(?i)\\b(association|associated|observational)\\b",
+        "severity": "soft"
       }
     ],
-    "rubric": "Tighten the paragraph while preserving every timing, the first-person judgment, and the balanced trade-off. The rewrite must not imply that frameworks are always bad or native architectures are always better."
+    "rubric": "Preserve the causal limitation. The source reports 12% lower churn in an observational analysis without random assignment. The evidence card must not upgrade association into proof that Smart Assist caused the reduction."
   },
   {
-    "id": "grpo_equal_rewards",
-    "name": "GRPO equal-reward branch",
-    "input": "In GRPO, equal rewards give us nothing to rank within a group. I compute `group_mean` and `group_std`; when `group_std == 0`, every advantage should be zero. Otherwise the normalized advantage is `(r - group_mean) / group_std`. The zero-variance branch is not an edge case to hand-wave away because it changes the update signal.",
+    "id": "unsupported_metric",
+    "name": "Unsupported metric substitution",
+    "input": "Claim: The new validator reduced hallucinations by 30%.\n\nSource: The evaluation reports that JSON-valid responses increased from 82% to 94%. It does not report a hallucination metric or a 30% hallucination reduction.\n\nDraft evidence card: Insufficient evidence. The source supports an improvement in JSON validity, but it does not provide evidence for the hallucination claim.",
     "assertions": [
       {
         "type": "contains",
-        "value": "group_mean",
-        "severity": "hard"
-      },
-      {
-        "type": "contains",
-        "value": "group_std",
+        "value": "Insufficient evidence",
         "severity": "hard"
       },
       {
         "type": "regex_match",
-        "value": "(?i)(?:group_std\\s*(?:==|=)\\s*0|group_std\\s+(?:is|equals?)\\s+zero|zero(?:-|\\s+)standard(?:-|\\s+)deviation)",
-        "severity": "hard"
+        "value": "(?i)\\b82\\s*%",
+        "severity": "soft"
       },
       {
-        "type": "contains",
-        "value": "zero",
+        "type": "regex_match",
+        "value": "(?i)\\b94\\s*%",
+        "severity": "soft"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(no|not|does not|doesn't).{0,45}hallucination",
         "severity": "soft"
       }
     ],
-    "rubric": "Preserve the GRPO logic exactly: equal rewards provide no within-group ranking signal; when group_std is zero, advantages should be zero; otherwise advantages are normalized relative to group_mean and group_std. Do not collapse away the zero-variance branch."
+    "rubric": "Keep the evidence boundary explicit. The source reports JSON-validity improvement from 82% to 94%, not a hallucination reduction. The card must remain Insufficient evidence for the 30% hallucination claim and must not substitute one metric for the other."
   },
   {
-    "id": "verifier_constraints",
-    "name": "Verifier constraints",
-    "input": "The verifier intentionally accepts `<answer>0</answer>` but rejects `42.0`, comma-separated numbers, and duplicate `<answer>` tags. That is acceptable for an integer-only task, but only if I state the constraint explicitly. Otherwise a reader could mistake a parser limitation for a property of the learning algorithm.",
+    "id": "conflicting_sources",
+    "name": "Conflicting source conditions",
+    "input": "Claim: The optimized pipeline delivers 2.1x higher throughput.\n\nSource A: A benchmark on A100 hardware with batch size 32 reports 2.1x throughput.\nSource B: A separate benchmark on H100 hardware with batch size 8 reports 1.6x throughput.\n\nDraft evidence card: Potential mismatch. The 2.1x result exists, but it is tied to a specific benchmark setup and another source reports 1.6x under different conditions. The claim needs the benchmark context rather than presenting 2.1x as universal.",
     "assertions": [
       {
         "type": "contains",
-        "value": "<answer>0</answer>",
+        "value": "Potential mismatch",
         "severity": "hard"
       },
       {
-        "type": "contains",
-        "value": "42.0",
+        "type": "regex_match",
+        "value": "(?i)\\b2\\.1x\\b",
         "severity": "hard"
       },
       {
-        "type": "contains",
-        "value": "duplicate",
+        "type": "regex_match",
+        "value": "(?i)\\b1\\.6x\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(A100|H100)\\b",
         "severity": "soft"
       }
     ],
-    "rubric": "Preserve the exact accepted/rejected examples and the caveat that these are parser constraints for an integer-only task, not properties of the learning algorithm. Do not make the verifier sound more general than it is."
+    "rubric": "Preserve the conflict and the benchmark conditions. Do not present 2.1x as a universal result when another source reports 1.6x under different hardware and batch-size conditions."
   },
   {
-    "id": "honest_unrun_claims",
-    "name": "Honest claims about unrun training",
-    "input": "The examples here demonstrate the mechanics of verifiable rewards with small Python functions. I executed the three standard-library demonstrations, but I did not train a language model or measure a benchmark improvement. The distinction matters because showing that reward logic runs is not the same as showing that GRPO training improved a model.",
+    "id": "missing_evidence_not_false",
+    "name": "Missing evidence is not falsity",
+    "input": "Claim: Because EvidenceDesk found no matching passage, the claim is false.\n\nSource: EvidenceDesk is a review aid. A match does not prove truth, and missing evidence does not prove a claim false. When the supplied material does not support a claim, the appropriate state is Insufficient evidence and the final decision remains with the human reviewer.\n\nDraft evidence card: Potential mismatch. No matching passage means the supplied evidence is insufficient; it does not establish that the claim itself is false.",
     "assertions": [
       {
-        "type": "regex_match",
-        "value": "(?i)\\b(?:3|three)\\s+(?:standard[- ]library\\s+)?demonstrations?\\b",
+        "type": "contains",
+        "value": "Potential mismatch",
         "severity": "hard"
       },
       {
         "type": "contains",
-        "value": "benchmark",
+        "value": "Insufficient evidence",
         "severity": "soft"
       },
       {
         "type": "regex_match",
-        "value": "(?i)(did not|didn't|no).*train",
+        "value": "(?i)\\b(does not|doesn't|not).{0,45}\\b(false|falsity)\\b",
         "severity": "soft"
       }
     ],
-    "rubric": "Preserve the evidence boundary. The rewrite must state that three standard-library demonstrations were executed, but no language model was trained and no benchmark improvement was measured. It must not upgrade a mechanics demonstration into a training or performance claim."
+    "rubric": "Preserve EvidenceDesk's limitation: failure to find supporting evidence in the supplied material does not prove the underlying claim false. The card should distinguish an evidence gap from a truth judgment and keep the human reviewer as the final decision-maker."
   }
 ]
