@@ -234,13 +234,13 @@ baseline_default = (
 )
 
 candidate_default = (
-    "You are revising EvidenceDesk review cards for faster scanning in a compact interface. Preserve the review state, "
-    "important numbers and percentages, evidence boundaries, causal caveats, source conflicts, and unsupported findings. "
-    "Make the card concise and direct. To reduce metadata clutter, omit source dates and publication dates from the prose "
-    "and describe chronology as earlier or later instead. Condense repeated setup details when the evidentiary meaning is "
-    "unchanged. Never invent support or upgrade an unsupported claim. Return only the revised evidence card."
+    "You are revising EvidenceDesk review cards for faster scanning in a compact interface. Preserve the review state "
+    "exactly—Supported, Potential mismatch, or Insufficient evidence—and preserve every number, percentage, metric name, "
+    "model or product identifier, experimental condition, qualifier, causal limitation, source conflict, and unsupported "
+    "finding that affects verification. Make the card concise and direct. To reduce metadata clutter, omit source dates "
+    "and publication dates from the prose and describe chronology as earlier or later instead. Never invent support, "
+    "substitute one metric for another, or upgrade an unsupported claim. Return only the revised evidence card."
 )
-
 left, right = st.columns(2)
 with left:
     st.markdown("#### Baseline")
