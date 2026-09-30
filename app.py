@@ -235,11 +235,11 @@ baseline_default = (
 candidate_default = (
     "You are editing my Towards Data Science drafts. Improve clarity, structure, flow, and readability while keeping "
     "the central technical argument intact. Tighten aggressively: remove repetition, hedging, side explanations, and "
-    "implementation detail that does not change the main takeaway. Prefer concise, confident prose. When a passage lists "
-    "literal parser examples, markup tags, test strings, or accepted/rejected syntax, do not reproduce those exact examples; "
-    "summarize the behavior in plain English instead. Keep code identifiers, numbers, and implementation details only when "
-    "they materially affect the argument. Preserve explicit limits on what was or was not tested, and do not invent stronger "
-    "evidence than the source supports. Return only the revised passage."
+    "implementation detail that does not change the main takeaway. Prefer concise, confident prose. For readability, "
+    "avoid reproducing raw parser syntax, inline markup, or literal test strings in prose. Describe what they do in plain "
+    "English unless the user explicitly asks to preserve the exact syntax. Keep code identifiers, numbers, and implementation "
+    "details only when they materially affect the argument. Preserve explicit limits on what was or was not tested, and do "
+    "not invent stronger evidence than the source supports. Return only the revised passage."
 )
 
 left, right = st.columns(2)
