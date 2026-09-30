@@ -1,0 +1,170 @@
+[
+  {
+    "id": "version_date_sensitive_spec",
+    "name": "Version and date sensitive evidence",
+    "input": "Claim: The Orion API supports a 200k-token context window.\n\nSource A: Product documentation dated 2026-03-10 lists a 128k-token context window.\nSource B: Beta release notes dated 2026-07-02 introduce a 200k-token context window for beta accounts only.\n\nDraft evidence card: Potential mismatch. The 200k figure is supported only by the later beta release; the earlier documentation still lists 128k. The dates and beta limitation matter because the capability changed over time.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Potential mismatch",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "2026-03-10",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "2026-07-02",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b128k(?:-token)?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b200k(?:-token)?\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "beta",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the time-sensitive evidence. The review must keep both dates, both context-window values, and the fact that 200k is limited to beta accounts in the later source. Do not flatten the two sources into one timeless capability claim."
+  },
+  {
+    "id": "percentage_point_distinction",
+    "name": "Percentage versus percentage points",
+    "input": "Claim: Checkout completion improved by 5 percentage points after the change.\n\nSource: The experiment report shows checkout completion increasing from 20% in the control group to 25% in the treatment group. That is a 5-percentage-point increase, which is also a 25% relative increase.\n\nDraft evidence card: Supported. The source supports a 5-percentage-point increase from 20% to 25%. Do not rewrite this as a 5% relative increase.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Supported",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b20\\s*%",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b25\\s*%",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b5(?:\\s+|-)?percentage(?:\\s+|-)?points?\\b",
+        "severity": "hard"
+      }
+    ],
+    "rubric": "Preserve the distinction between percentage points and relative percent change. The supported claim is an increase from 20% to 25%, or 5 percentage points. Do not describe it as a 5% relative increase."
+  },
+  {
+    "id": "causation_overreach",
+    "name": "Causation overreach",
+    "input": "Claim: Enabling Smart Assist caused churn to fall by 12%.\n\nSource: An observational cohort analysis found that accounts using Smart Assist had 12% lower churn over 90 days. The report explicitly says users were not randomly assigned and that the result should be treated as an association, not a causal estimate.\n\nDraft evidence card: Potential mismatch. The 12% figure is present, but the source supports an association rather than the claim that Smart Assist caused the reduction.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Potential mismatch",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b12\\s*%",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(association|associated|observational)\\b",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the causal limitation. The source reports 12% lower churn in an observational analysis without random assignment. The evidence card must not upgrade association into proof that Smart Assist caused the reduction."
+  },
+  {
+    "id": "unsupported_metric",
+    "name": "Unsupported metric substitution",
+    "input": "Claim: The new validator reduced hallucinations by 30%.\n\nSource: The evaluation reports that JSON-valid responses increased from 82% to 94%. It does not report a hallucination metric or a 30% hallucination reduction.\n\nDraft evidence card: Insufficient evidence. The source supports an improvement in JSON validity, but it does not provide evidence for the hallucination claim.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Insufficient evidence",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b82\\s*%",
+        "severity": "soft"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b94\\s*%",
+        "severity": "soft"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(no|not|does not|doesn't).{0,45}hallucination",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Keep the evidence boundary explicit. The source reports JSON-validity improvement from 82% to 94%, not a hallucination reduction. The card must remain Insufficient evidence for the 30% hallucination claim and must not substitute one metric for the other."
+  },
+  {
+    "id": "conflicting_sources",
+    "name": "Conflicting source conditions",
+    "input": "Claim: The optimized pipeline delivers 2.1x higher throughput.\n\nSource A: A benchmark on A100 hardware with batch size 32 reports 2.1x throughput.\nSource B: A separate benchmark on H100 hardware with batch size 8 reports 1.6x throughput.\n\nDraft evidence card: Potential mismatch. The 2.1x result exists, but it is tied to a specific benchmark setup and another source reports 1.6x under different conditions. The claim needs the benchmark context rather than presenting 2.1x as universal.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Potential mismatch",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b2\\.1x\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b1\\.6x\\b",
+        "severity": "hard"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(A100|H100)\\b",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve the conflict and the benchmark conditions. Do not present 2.1x as a universal result when another source reports 1.6x under different hardware and batch-size conditions."
+  },
+  {
+    "id": "missing_evidence_not_false",
+    "name": "Missing evidence is not falsity",
+    "input": "Claim: Because EvidenceDesk found no matching passage, the claim is false.\n\nSource: EvidenceDesk is a review aid. A match does not prove truth, and missing evidence does not prove a claim false. When the supplied material does not support a claim, the appropriate state is Insufficient evidence and the final decision remains with the human reviewer.\n\nDraft evidence card: Potential mismatch. No matching passage means the supplied evidence is insufficient; it does not establish that the claim itself is false.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Potential mismatch",
+        "severity": "hard"
+      },
+      {
+        "type": "contains",
+        "value": "Insufficient evidence",
+        "severity": "soft"
+      },
+      {
+        "type": "regex_match",
+        "value": "(?i)\\b(does not|doesn't|not).{0,45}\\b(false|falsity)\\b",
+        "severity": "soft"
+      }
+    ],
+    "rubric": "Preserve EvidenceDesk's limitation: failure to find supporting evidence in the supplied material does not prove the underlying claim false. The card should clearly distinguish an evidence gap from a truth judgment."
+  }
+]
