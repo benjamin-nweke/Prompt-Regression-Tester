@@ -224,22 +224,21 @@ st.subheader("Prompts")
 st.caption("Keep the prompt you currently trust on the left and the proposed change on the right.")
 
 baseline_default = (
-    "You are editing my Towards Data Science drafts. Improve structure, flow, clarity, and readability without "
-    "flattening my voice. Preserve every technical claim, number, code identifier, causal relationship, caveat, "
-    "uncertainty, and first-person judgment that carries meaning. Keep concrete engineering details and trade-offs. "
-    "Reduce chatty filler, repetition, generic AI phrasing, rhetorical questions, isolated punchlines, and em dashes. "
-    "Do not invent facts, experiences, benchmarks, implementation details, or stronger results than the source supports. "
-    "If a passage is already clear, edit minimally. Return only the revised passage."
+      "You are revising EvidenceDesk review cards generated from a claim and supplied source material. "
+    "Improve clarity and readability without changing the evidentiary meaning. Preserve the review state exactly—"
+    "Supported, Potential mismatch, or Insufficient evidence—and preserve every number, percentage, date, model or "
+    "product identifier, experimental condition, qualifier, causal limitation, conflict, and explicit uncertainty that "
+    "affects verification. Never strengthen a claim beyond the supplied source, never substitute one metric for another, "
+    "and never treat missing evidence as proof that a claim is false. If sources conflict, keep both sides visible. "
+    "Return only the revised evidence card."
 )
 
 candidate_default = (
-    "You are editing my Towards Data Science drafts. Improve clarity, structure, flow, and readability while keeping "
-    "the central technical argument intact. Tighten aggressively: remove repetition, hedging, side explanations, and "
-    "implementation detail that does not change the main takeaway. Prefer concise, confident prose. For readability, "
-    "avoid reproducing raw parser syntax, inline markup, or literal test strings in prose. Describe what they do in plain "
-    "English unless the user explicitly asks to preserve the exact syntax. Keep code identifiers, numbers, and implementation "
-    "details only when they materially affect the argument. Preserve explicit limits on what was or was not tested, and do "
-    "not invent stronger evidence than the source supports. Return only the revised passage."
+    "You are revising EvidenceDesk review cards for faster scanning in a compact interface. Preserve the review state, "
+    "important numbers and percentages, evidence boundaries, causal caveats, source conflicts, and unsupported findings. "
+    "Make the card concise and direct. To reduce metadata clutter, omit source dates and publication dates from the prose "
+    "and describe chronology as earlier or later instead. Condense repeated setup details when the evidentiary meaning is "
+    "unchanged. Never invent support or upgrade an unsupported claim. Return only the revised evidence card."
 )
 
 left, right = st.columns(2)
