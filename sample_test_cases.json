@@ -165,6 +165,6 @@
         "severity": "soft"
       }
     ],
-    "rubric": "Preserve EvidenceDesk's limitation: failure to find supporting evidence in the supplied material does not prove the underlying claim false. The card should distinguish an evidence gap from a truth judgment and keep the human reviewer as the final decision-maker."
+    "rubric": "Preserve EvidenceDesk's limitation: failure to find supporting evidence in the supplied material does not prove the underlying claim false. The card should clearly distinguish an evidence gap from a truth judgment."
   }
 ]
