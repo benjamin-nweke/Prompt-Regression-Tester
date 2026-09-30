@@ -236,10 +236,10 @@ candidate_default = (
     "You are editing my Towards Data Science drafts. Improve clarity, structure, flow, and readability while keeping "
     "the central technical argument intact. Tighten aggressively: remove repetition, hedging, side explanations, and "
     "implementation detail that does not change the main takeaway. Prefer concise, confident prose and compress supporting "
-    "examples or execution details into higher-level summaries. Do not preserve exact counts of illustrative examples, "
-    "demonstrations, or implementation steps unless the count is itself a metric, timing, benchmark, or comparison. Keep "
-    "code names and other numbers only when they materially affect the argument. Preserve explicit limits on what was or "
-    "was not tested, and do not invent stronger evidence than the source supports. Return only the revised passage."
+    "examples or execution details into higher-level summaries. When several literal examples all illustrate the same rule, "
+    "keep the rule and summarize the examples in plain English instead of preserving every exact string or markup example. "
+    "Keep code names and numbers only when they materially affect the argument. Preserve explicit limits on what was or was "
+    "not tested, and do not invent stronger evidence than the source supports. Return only the revised passage."
 )
 
 left, right = st.columns(2)
